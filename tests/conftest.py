@@ -7,8 +7,7 @@ def driver(request):
     browser = request.param
 
     # ✅ Detect if we are inside Jenkins Docker or local host
-    grid_host = "selenium-hub" if os.environ.get("JENKINS_URL") else "localhost"
-    grid_url = f"http://{grid_host}:4444/wd/hub"
+    grid_url = "http://localhost:4444/wd/hub"
 
     if browser == "chrome":
         options = webdriver.ChromeOptions()

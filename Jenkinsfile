@@ -1,25 +1,33 @@
 stage('Run Tests') {
     steps {
         sh '''
-        echo "=== Waiting for Selenium Hub to be ready ==="
+        echo "=== Checking Selenium Hub readiness ==="
         ATTEMPTS=0
         until curl -s http://localhost:4444/status | grep -q '"ready":true'; do
             ATTEMPTS=$((ATTEMPTS+1))
-            echo "Hub not ready... attempt $ATTEMPTS"
+            echo "Waiting for Hub... attempt $ATTEMPTS"
             sleep 2
         done
 
-        echo "=== Waiting for Chrome & Firefox nodes to register ==="
+        echo "=== Checking Chrome & Firefox nodes ==="
         ATTEMPTS=0
-        until [ "$(curl -s http://localhost:4444/se/grid/status | grep -c '"id"')" -ge 2 ]; do
+        while true; do
+            NODE_COUNT=$(curl -s http://localhost:4444/status | grep -o '"uri"' | wc -l)
+            if [ "$NODE_COUNT" -ge 2 ]; then
+                echo "✅ Chrome and Firefox nodes registered successfully!"
+                break
+            fi
             ATTEMPTS=$((ATTEMPTS+1))
-            echo "Nodes not yet registered... attempt $ATTEMPTS"
+            echo "Waiting for nodes... attempt $ATTEMPTS"
             sleep 3
+            if [ $ATTEMPTS -gt 15 ]; then
+                echo "❌ Nodes not registered within timeout."
+                docker ps
+                exit 1
+            fi
         done
 
-        echo "=== Hub and Nodes are ready! Running pytest now ==="
-        docker ps
-
+        echo "=== All nodes ready. Running tests ==="
         /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pytest -v tests/
         '''
     }

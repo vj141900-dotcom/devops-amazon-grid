@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/vj141900-dotcom/devops-amazon-grid.git'
+                    url: 'https://github.com/<your-username>/devops-amazon-grid.git'
             }
         }
 
@@ -22,9 +22,9 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                echo "Installing dependencies globally for Jenkins..."
-                python3 -m pip install --upgrade pip
-                python3 -m pip install -r requirements.txt
+                echo "Installing dependencies using system Python..."
+                /usr/local/bin/python3 -m pip install --upgrade pip
+                /usr/local/bin/python3 -m pip install -r requirements.txt
                 '''
             }
         }
@@ -32,8 +32,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                echo "Running pytest..."
-                python3 -m pytest -v tests/ || true
+                echo "Running pytest using system Python..."
+                /usr/local/bin/python3 -m pytest -v tests/ || true
                 '''
             }
         }
@@ -48,3 +48,4 @@ pipeline {
         }
     }
 }
+

@@ -33,7 +33,7 @@ pipeline {
             steps {
                 sh '''
                 echo "Running pytest using system Python..."
-                /usr/local/bin/python3 -m pytest -v tests/ || true
+                /usr/local/bin/python3 -m pytest -v tests/
                 '''
             }
         }

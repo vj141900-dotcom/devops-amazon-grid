@@ -12,7 +12,7 @@ def driver(request):
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--window-size=1920,1080")
         drv = webdriver.Remote(
-            command_executor="http://localhost:4444/wd/hub",
+            command_executor="http://selenium-hub:4444/wd/hub",
             options=options
         )
 
@@ -20,7 +20,7 @@ def driver(request):
         options = webdriver.FirefoxOptions()
         options.add_argument("--headless")
         drv = webdriver.Remote(
-            command_executor="http://localhost:4444/wd/hub",
+            command_executor="http://selenium-hub:4444/wd/hub",
             options=options
         )
 

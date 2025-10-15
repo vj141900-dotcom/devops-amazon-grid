@@ -9,28 +9,41 @@ pipeline {
             }
         }
 
-        stage('Setup & Run Tests') {
+        stage('Start Selenium Grid') {
             steps {
                 sh '''
-                echo "===== Starting Selenium Grid Automation ====="
-
-                echo "Cleaning up old containers..."
+                echo "=== Cleaning old containers ==="
                 docker-compose down || true
-
-                echo "Starting new Selenium Grid containers..."
+                echo "=== Starting new Selenium Grid ==="
                 docker-compose up -d
+                '''
+            }
+        }
 
-                echo "Installing dependencies (using system Python)..."
-                python3 -m pip install --upgrade pip
-                python3 -m pip install -r requirements.txt
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                echo "=== Installing dependencies ==="
+                /usr/local/bin/python3 -m pip install --upgrade pip
+                /usr/local/bin/python3 -m pip install -r requirements.txt
+                '''
+            }
+        }
 
-                echo "Running pytest using system Python..."
-                python3 -m pytest -v tests/ || true
+        stage('Run Tests') {
+            steps {
+                sh '''
+                echo "=== Running tests using full path ==="
+                /usr/local/bin/python3 -m pytest -v tests/ || true
+                '''
+            }
+        }
 
-                echo "Stopping Selenium Grid containers..."
+        stage('Stop Selenium Grid') {
+            steps {
+                sh '''
+                echo "=== Stopping Selenium Grid ==="
                 docker-compose down
-
-                echo "===== Pipeline completed successfully ====="
                 '''
             }
         }

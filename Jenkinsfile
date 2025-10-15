@@ -24,8 +24,8 @@ pipeline {
             steps {
                 sh '''
                 echo "=== Installing dependencies ==="
-                /usr/local/bin/python3 -m pip install --upgrade pip
-                /usr/local/bin/python3 -m pip install -r requirements.txt
+                /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip install --upgrade pip
+                /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pip install -r requirements.txt
                 '''
             }
         }
@@ -33,8 +33,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                echo "=== Running tests using full path ==="
-                /usr/local/bin/python3 -m pytest -v tests/ || true
+                echo "=== Running tests using full interpreter path ==="
+                /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pytest -v tests/ || true
                 '''
             }
         }

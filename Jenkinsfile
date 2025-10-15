@@ -19,7 +19,7 @@ stage('Run Tests') {
             fi
             ATTEMPTS=$((ATTEMPTS+1))
             echo "Waiting for nodes... attempt $ATTEMPTS"
-            sleep 3
+            sleep 5
             if [ $ATTEMPTS -gt 15 ]; then
                 echo "❌ Nodes not registered within timeout."
                 docker ps

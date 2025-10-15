@@ -9,26 +9,23 @@ pipeline {
             }
         }
 
-        stage('Run Full Automation') {
+        stage('Setup & Run Tests') {
             steps {
                 sh '''
                 echo "===== Starting Selenium Grid Automation ====="
 
-                echo "Stopping old containers (if any)..."
+                echo "Cleaning up old containers..."
                 docker-compose down || true
 
-                echo "Starting Selenium Grid containers..."
+                echo "Starting new Selenium Grid containers..."
                 docker-compose up -d
 
-                echo "Setting up Python virtual environment..."
-                python3 -m venv .venv
+                echo "Installing dependencies (using system Python)..."
+                python3 -m pip install --upgrade pip
+                python3 -m pip install -r requirements.txt
 
-                echo "Installing dependencies..."
-                .venv/bin/python3 -m pip install --upgrade pip
-                .venv/bin/python3 -m pip install -r requirements.txt
-
-                echo "Running pytest using Python module..."
-                .venv/bin/python3 -m pytest -v tests/ || true
+                echo "Running pytest using system Python..."
+                python3 -m pytest -v tests/ || true
 
                 echo "Stopping Selenium Grid containers..."
                 docker-compose down

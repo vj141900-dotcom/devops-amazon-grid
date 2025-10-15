@@ -22,19 +22,18 @@ pipeline {
 
                 echo "Setting up Python virtual environment..."
                 python3 -m venv .venv
-                source .venv/bin/activate
 
                 echo "Installing dependencies..."
-                pip install --upgrade pip
-                pip install -r requirements.txt
+                .venv/bin/python3 -m pip install --upgrade pip
+                .venv/bin/python3 -m pip install -r requirements.txt
 
-                echo "Running pytest inside virtual environment..."
-                pytest -v tests/ || true
+                echo "Running pytest using Python module..."
+                .venv/bin/python3 -m pytest -v tests/ || true
 
                 echo "Stopping Selenium Grid containers..."
                 docker-compose down
 
-                echo "===== Pipeline completed ====="
+                echo "===== Pipeline completed successfully ====="
                 '''
             }
         }

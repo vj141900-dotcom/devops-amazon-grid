@@ -6,11 +6,8 @@ from selenium import webdriver
 def driver(request):
     browser = request.param
 
-    # ✅ Detect Jenkins vs Local
-    if os.environ.get("JENKINS_URL"):
-        grid_url = "http://selenium-hub:4444/wd/hub"
-    else:
-        grid_url = "http://localhost:4444/wd/hub"
+    # ✅ Jenkins runs outside Docker → must use localhost
+    grid_url = "http://localhost:4444/wd/hub"
 
     if browser == "chrome":
         options = webdriver.ChromeOptions()

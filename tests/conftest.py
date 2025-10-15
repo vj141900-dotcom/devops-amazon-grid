@@ -6,8 +6,11 @@ from selenium import webdriver
 def driver(request):
     browser = request.param
 
-    # ✅ Detect if we are inside Jenkins Docker or local host
-    grid_url = "http://localhost:4444/wd/hub"
+    # ✅ Detect Jenkins vs Local
+    if os.environ.get("JENKINS_URL"):
+        grid_url = "http://selenium-hub:4444/wd/hub"
+    else:
+        grid_url = "http://localhost:4444/wd/hub"
 
     if browser == "chrome":
         options = webdriver.ChromeOptions()
@@ -24,9 +27,6 @@ def driver(request):
 
     elif browser == "safari":
         drv = webdriver.Safari()
-
-    else:
-        raise ValueError(f"Unsupported browser: {browser}")
 
     yield drv
     drv.quit()

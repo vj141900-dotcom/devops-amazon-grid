@@ -6,31 +6,31 @@ stage('Run Tests') {
         until curl -s http://localhost:4444/status | grep -q '"ready":true'; do
             ATTEMPTS=$((ATTEMPTS+1))
             echo "Waiting for Hub... attempt $ATTEMPTS"
-            sleep 2
+            sleep 3
         done
 
-        echo "=== Waiting for Chrome and Firefox nodes to register ==="
+        echo "=== Waiting for Chrome & Firefox node registration ==="
         ATTEMPTS=0
         while true; do
             NODE_COUNT=$(curl -s http://localhost:4444/status | grep -o '"uri"' | wc -l)
             if [ "$NODE_COUNT" -ge 2 ]; then
-                echo "✅ Chrome and Firefox nodes detected!"
+                echo "✅ Chrome and Firefox nodes registered successfully!"
                 break
             fi
             ATTEMPTS=$((ATTEMPTS+1))
-            echo "Waiting for nodes... attempt $ATTEMPTS"
+            echo "Nodes not ready yet... attempt $ATTEMPTS"
             sleep 5
-            if [ $ATTEMPTS -gt 20 ]; then
+            if [ $ATTEMPTS -gt 30 ]; then
                 echo "❌ Timeout: Nodes did not register."
                 docker ps
                 exit 1
             fi
         done
 
-        echo "=== Giving extra 10s for browser sessions to initialize ==="
-        sleep 10
+        echo "=== Giving extra 15s for full browser startup ==="
+        sleep 15
 
-        echo "=== Running pytest now ==="
+        echo "=== Running pytest ==="
         /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pytest -v tests/
         '''
     }
